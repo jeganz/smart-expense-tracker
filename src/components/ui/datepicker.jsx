@@ -6,7 +6,6 @@ import { CalendarIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Popover,
   PopoverContent,
@@ -17,12 +16,10 @@ function formatDate(date) {
   if (!date) {
     return ""
   }
-
-  return date.toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  })
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
 }
 
 function isValidDate(date) {
@@ -53,6 +50,7 @@ export function Calendar28({setTransactionData}) {
             if (isValidDate(date)) {
               setDate(date)
               setMonth(date)
+              setTransactionData((prev)=>({...prev,date:formatDate(date)}))
             }
           }}
           onKeyDown={(e) => {
@@ -88,7 +86,7 @@ export function Calendar28({setTransactionData}) {
               onSelect={(date) => {
                 setDate(date)
                 setValue(formatDate(date))
-                setTransactionData((prev)=>({...prev,date:value}))
+                setTransactionData((prev)=>({...prev,date:formatDate(date)}))
                 setOpen(false)
               }}
             />

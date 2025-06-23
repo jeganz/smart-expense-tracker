@@ -1,5 +1,10 @@
 "use client"
 import { categories } from "@/constants/categories"
+
+import { collection,addDoc } from "firebase/firestore"
+import { db } from "@/lib/firebase"
+
+
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -20,7 +25,6 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
-
 import {
   Select,
   SelectContent,
@@ -28,7 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Item } from "@radix-ui/react-toggle-group"
 
 export function AddTransactionForm() {
   const [transactiionData, setTransactionData] = useState({
@@ -43,7 +46,17 @@ export function AddTransactionForm() {
     setTransactionData((prev)=>({...prev,[name]:value}))
     
   }
-  const handleSubmit = ()=>{
+  const handleSubmit = async (e)=>{
+    console.log(transactiionData);
+
+    try {
+      await addDoc(collection(db,'transactions'),transactiionData);
+      console.log('transaction added')
+    } catch (error) {
+      console.error(error);
+      
+    }
+
     setTransactionData({
     amount: "",
     description: "",
@@ -51,7 +64,6 @@ export function AddTransactionForm() {
     type:"",
     category:"",
   })
-    console.log(transactiionData);
   }
   return (
     <Dialog>
@@ -94,7 +106,7 @@ export function AddTransactionForm() {
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((item)=>(
-                    <SelectItem value={item}>{item}</SelectItem>
+                    <SelectItem key={item} value={item}>{item}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
