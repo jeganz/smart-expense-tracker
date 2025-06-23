@@ -32,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Plus } from "lucide-react"
 
 export function AddTransactionForm() {
   const [transactiionData, setTransactionData] = useState({
@@ -69,7 +70,7 @@ export function AddTransactionForm() {
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button variant="outline">Add Transaction</Button>
+          <Button ><Plus/> Add</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
