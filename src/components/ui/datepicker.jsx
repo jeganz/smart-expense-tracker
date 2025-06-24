@@ -29,13 +29,14 @@ function isValidDate(date) {
   return !isNaN(date.getTime())
 }
 
-export function Calendar28({setTransactionData}) {
+export function Calendar28({ onChange,val }) {
   const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState(
-  )
+  const [date, setDate] = React.useState(val)
   const [month, setMonth] = React.useState(date)
   const [value, setValue] = React.useState(formatDate(date))
-
+  React.useEffect(() => {
+    setValue(val);
+  }, [val]);
   return (
     <div className="flex flex-col gap-3">
       <div className="relative flex gap-2">
@@ -49,8 +50,10 @@ export function Calendar28({setTransactionData}) {
             setValue(e.target.value)
             if (isValidDate(date)) {
               setDate(date)
-              setMonth(date)
-              setTransactionData((prev)=>({...prev,date:formatDate(date)}))
+              setMonth(date); 
+              if (onChange) {
+                onChange(date.toISOString().split("T")[0]); // format: YYYY-MM-DD
+              }
             }
           }}
           onKeyDown={(e) => {
@@ -86,7 +89,9 @@ export function Calendar28({setTransactionData}) {
               onSelect={(date) => {
                 setDate(date)
                 setValue(formatDate(date))
-                setTransactionData((prev)=>({...prev,date:formatDate(date)}))
+                if (onChange) {
+                  onChange(date.toISOString().split("T")[0]); // format: YYYY-MM-DD
+                }
                 setOpen(false)
               }}
             />

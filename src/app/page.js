@@ -2,24 +2,23 @@
 
 import DataTable from "@/components/Transaction-table";
 import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [transactions, settransactions] = useState([]);
 
-  useEffect(()=>{
-    const fetchData = async ()=>{
-      const queryData = await getDocs(collection(db,'transactions'));
-      
-      const data = queryData.docs.map((doc)=>({
-        id:doc.id,
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "transactions"), (snapshot) => {
+      const items = snapshot.docs.map((doc) => ({
+        id: doc.id,
         ...doc.data(),
       }));
-      settransactions(data)
-    }
-    fetchData();
-  },[])
+      settransactions(items); // or however you're setting state
+    });
+
+    return () => unsubscribe(); // clean up
+  }, []);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-100">
